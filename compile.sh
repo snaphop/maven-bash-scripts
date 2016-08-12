@@ -1,10 +1,5 @@
 #!/bin/bash
 
-ACTION=$1
-
-#[[ -z "$ACTION" ]] && ACTION=$SNAPHOP_COMPILE_MODE
-[[ -z "$ACTION" ]] && ACTION="fast"
-
 
 function _properties() {
 	  mvn versions:update-properties -Dincludes=com.snaphop:*,com.recruitinghop:* -DallowSnapshots=false -DgenerateBackupPoms=false
@@ -32,6 +27,10 @@ function _updatePom() {
     fi
 }
 
+function _update() {
+    wget "https://raw.githubusercontent.com/snaphop/maven-bash-scripts/master/compile.sh" -O compile.sh
+}
+
 
 function _fail() {
     echo "$0 [fast|safe|test|clean|default|updatePom]"
@@ -40,17 +39,34 @@ function _default() {
     mvn -T 1C clean install -DskipTests=true
 }
 function _fast() {
+    echo "Compiling Fast"
 	  MAVEN_OPTS="$MAVEN_OPTS -XX:+TieredCompilation -XX:TieredStopAtLevel=1" mvn -T 1C install -DskipTests=true
 }
 
+function _clean() {
+    echo "Cleaning"
+    mvn clean
+}
 
-case "$ACTION" in
-	fast) _fast;;
-	safe) mvn clean install -DskipTests=true;;
-	test) mvn clean install;;
-	clean) mvn clean;;
-  updatePom) _updatePom;;
-  default) _default;;
-	*)   _fail;; 
-esac
+function _run() {
+    case $1 in
+	      fast) _fast;;
+	      safe) mvn clean install -DskipTests=true;;
+	      test) mvn clean install;;
+	      clean) _clean;;
+        update) _update;;
+        updatePom) _updatePom;;
+        default) _default;;
+	      *)   _fail && exit 1;; 
+    esac
+    
+}
+
+if (( "$#" =="0" )); then
+    _fast
+else
+    for _cmd in $@; do
+        _run $_cmd || exit;
+    done
+fi
 

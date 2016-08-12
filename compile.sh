@@ -9,27 +9,30 @@ function _parent() {
 	  mvn versions:update-parent -DallowSnapshots=false -DgenerateBackupPoms=false
 }
 
-function _checkLocal() {
+function _checkNoMods() {
 	  mvn scm:check-local-modification > /dev/null
 }
 
 function _checkin() {
-	  mvn scm:checkin -Dmessage="Updating pom versions"
-}
-
-function _updatePom() {
-    _parent && _properties
-
-    if ! _checkLocal ; then
-	      _checkin
+    if  _checkNoMods; then
+	      echo "No need to update pom or compile script."
     else
-	      echo "No need to update pom."
+	      mvn scm:checkin -Dmessage="Updating pom versions"
     fi
 }
 
-function _update() {
+function _updatePom() {
+    _parent && _properties 
+}
+
+function _updateScript() {
     wget "https://raw.githubusercontent.com/snaphop/maven-bash-scripts/master/compile.sh" -O compile.sh
 }
+
+function _update() {
+    ./compile.sh updateScript && ./compile.sh updatePom checkin
+}
+
 
 
 function _fail() {
@@ -55,7 +58,11 @@ function _run() {
 	      test) mvn clean install;;
 	      clean) _clean;;
         update) _update;;
+        updateScript) _updateScript;;
+        updateParent) _parent;;
+        updateProperties) _properties;;
         updatePom) _updatePom;;
+        checkin) _checkin;;
         default) _default;;
 	      *)   _fail && exit 1;; 
     esac

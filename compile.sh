@@ -30,7 +30,7 @@ function _updateScript() {
 }
 
 function _update() {
-    ./compile.sh updateScript && ./compile.sh updatePom 
+    ./compile.sh updateScript && ./compile.sh updatePom checkin 
 }
 
 

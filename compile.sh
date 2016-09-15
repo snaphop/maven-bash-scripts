@@ -27,6 +27,7 @@ function _updatePom() {
 
 function _updateScript() {
     ##should really GPG sign the script but oh well. if they hack us they hack us.
+    ##apparently you really really should not update a script but copy it first
     wget "https://raw.githubusercontent.com/snaphop/maven-bash-scripts/master/compile.sh" -O /tmp/compile-snaphop.sh
     cp /tmp/compile-snaphop.sh compile.sh
 }

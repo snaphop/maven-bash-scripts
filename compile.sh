@@ -26,6 +26,7 @@ function _updatePom() {
 }
 
 function _updateScript() {
+    ##should really GPG sign the script but oh well. if they hack us they hack us.
     wget "https://raw.githubusercontent.com/snaphop/maven-bash-scripts/master/compile.sh" -O compile.sh
 }
 
@@ -33,6 +34,13 @@ function _update() {
     ./compile.sh updateScript && ./compile.sh updatePom 
 }
 
+function getTag {
+	  hg tags | head -$1 | tail -1 | cut -f 1 -d " "
+}
+
+function _releaseDiff {
+    hg diff -r `getTag 3`:`getTag 2` 
+}
 
 
 function _fail() {
@@ -63,6 +71,7 @@ function _run() {
         updateProperties) _properties;;
         updatePom) _updatePom;;
         checkin) _checkin;;
+        releaseDiff) _releaseDiff;;
         default) _default;;
 	      *)   _fail && exit 1;; 
     esac

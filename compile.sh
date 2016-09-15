@@ -31,7 +31,7 @@ function _updateScript() {
 }
 
 function _update() {
-    ./compile.sh updateScript && ./compile.sh updatePom 
+    ./compile.sh updateScript && sleep 2 && ./compile.sh updatePom 
 }
 
 function getTag {
@@ -73,7 +73,7 @@ function _run() {
         checkin) _checkin;;
         releaseDiff) _releaseDiff;;
         default) _default;;
-	      *)   _fail && exit 1;; 
+	      *)   _fail && exit 1;;
     esac
     
 }

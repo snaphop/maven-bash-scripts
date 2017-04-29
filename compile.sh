@@ -22,7 +22,7 @@ function _checkin() {
 }
 
 function _updatePom() {
-    _parent && _properties 
+    _parent #&& _properties 
 }
 
 function _updateScript() {

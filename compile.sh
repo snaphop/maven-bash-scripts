@@ -6,7 +6,7 @@ function _properties() {
 }
 
 function _parent() {
-	  mvn versions:update-parent -DallowSnapshots=false -DgenerateBackupPoms=false
+	  mvn versions:update-parent -U -DallowSnapshots=false -DgenerateBackupPoms=false
 }
 
 function _checkNoMods() {
